@@ -1,0 +1,17 @@
+  <?xml version="1.0" encoding="UTF-8" ?>
+<offers>
+<offer>
+	<id><![CDATA[2109]]></id>
+	<name><![CDATA[Sleek Frozen Sausages]]></name>
+	<category><![CDATA[Sleek]]></category>
+	<description><![CDATA[Eum aut qui est c neque dolores rerum.]]></description>
+	<price><![CDATA[252.65 EUR]]></price>
+	<url><![CDATA[https://example.com/product/2109]]></url>
+	<image_url><![CDATA[http://lorempixel.com/640/480]]></image_url>
+	<opening_times><![CDATA[{"1":[{"opening":"10:00","closing":"22:30"}],"2":[{"opening":"10:00","closing":"22:30"}],"3":[{"opening":"10:00","closing":"22:30"}],"4":[{"opening":"10:00","closing":"22:30"}],"5":[{"opening":"10:00","closing":"22:30"}],"6":[{"opening":"10:00","closing":"22:30"}],"7":[],"timezone":"Europe/Warsaw"}]]></opening_times>
+</offer>
+<offer>
+	<id><![CDATA[7673]]></id>
+	<name><![CDATA[Ergonomic Soft Fish]]></name>
+	<category><![CDATA[Rustic]]></category>
+	<description><![CDATA[Pariatur consectetur au
