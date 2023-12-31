@@ -2,8 +2,9 @@
   "name": "xml-stream",
   "version": "1.0.0",
   "description": "Tool for xml conversion",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
+    "build": "tsc",
     "process-sample": "ts-node-dev src/index.ts",
     "process-feed": "ts-node-dev src/index.ts"
   },
