@@ -1,12 +1,11 @@
 import fs from 'node:fs'
-import { Transform } from 'node:stream'
-import { TransformCallback } from 'stream'
+import { Transform, PassThrough, TransformCallback } from 'node:stream'
 import path from 'path'
+import { ActiveOfferMonitor } from './helpers/active-offer-monitor'
+import { SplitInToOffer } from './helpers/split-in-to-offer'
 
-class ReplaceStream extends Transform {
+export class AddIsActiveNode extends Transform {
   tail: string
-  searchStr = 'EUR'
-  replaceStr = 'PLN'
   constructor(opts?: any) {
     super({ ...opts })
     this.tail = ''
@@ -17,58 +16,13 @@ class ReplaceStream extends Transform {
     encoding: BufferEncoding,
     callback: TransformCallback
   ): void {
-    const lastOfferClosingTag = (this.tail + chunk.toString()).lastIndexOf(
-      '</offer>'
-    )
+    // Single offer is populated or not - to be validated
+    const data = chunk.toString()
 
-    if (lastOfferClosingTag !== -1) {
-      // To be handled
-      console.log('last index of </offer>: ', lastOfferClosingTag)
-      const pieces = (this.tail + chunk.toString()).split('</offer>')
-      console.log('length of pieces: ', pieces.length)
-      pieces.pop()
-      // console.log(pieces)
-      // It
-      // this.tail = chunk.subarray(lastOfferClosingTag + 8).toString()
-      // if (pieces.length > 1) {
-      console.log('There is more elements in pieces')
-      // there is just one element in array
-      const joined = pieces.join('</offer_new>') + '</offer_new>'
-      this.tail = this.tail + chunk.toString()
-      console.log(joined)
-      // } else {
-      //   console.log('There is just one element in pieces')
-      //   // there is just one element in array
-      //   const joined = pieces[0] + '</offer_new>'
-      //   console.log(joined)
-      // }
-    } else {
-      // there is no </offer> tag in previous + current chunk
-      // so all is stored in to tail propertie for further processing
-      this.tail = this.tail + chunk.toString()
-      console.log('There is no </offer> in current buffer')
-      // Check how to filter data - if there is curicumstances that we dont want send data,
-      // just to iterate to next cb - to be checked hot to do not send / push data
-    }
-
-    // this.tail = chunk.subarray(lastOfferClosingTag + 8)
-
-    // console.log(pieces)
-    this.tail = chunk.subarray(lastOfferClosingTag + 8).toString()
-    // console.log('pieces, ', pieces)
-    // console.log(this.tail.toString())
-    // console.log(chunk.toString())
-    // const pieces = (this.tail + chunk).split(this.searchStr)
-    // const lastPiece = pieces[pieces.length - 1]
-    // const tailLen = this.searchStr.length - 1
-    // this.tail = lastPiece.slice(-tailLen)
-    // pieces[pieces.length - 1] = lastPiece.slice(0, -tailLen)
-
-    // this.push(pieces.join(this.replaceStr))
-    // callback()
+    callback(null, chunk)
   }
   _flush(callback: TransformCallback): void {
-    // this.push(this.tail)
+    // Not needed ?
     callback()
   }
 }
@@ -81,7 +35,11 @@ const main = async () => {
   })
   const writeStream = fs.createWriteStream(feedOutUrl)
 
-  readStream.pipe(new ReplaceStream()).pipe(writeStream)
+  readStream
+    .pipe(new SplitInToOffer())
+    .pipe(new AddIsActiveNode())
+    .pipe(new ActiveOfferMonitor())
+    .pipe(writeStream)
 }
 
 main()
