@@ -1,45 +1,33 @@
-import fs from 'node:fs'
-import { Transform, PassThrough, TransformCallback } from 'node:stream'
+import { createReadStream, createWriteStream } from 'node:fs'
+import { pipeline } from 'node:stream'
 import path from 'path'
-import { ActiveOfferMonitor } from './helpers/active-offer-monitor'
-import { SplitInToOffer } from './helpers/split-in-to-offer'
+import { ActiveOfferMonitor } from './helpers/count-active-monitor'
+import { SplitInToOffer } from './helpers/split-offers-transform'
+import { AddIsActiveNode } from './helpers/is-active-transform'
 
-export class AddIsActiveNode extends Transform {
-  tail: string
-  constructor(opts?: any) {
-    super({ ...opts })
-    this.tail = ''
-  }
-
-  _transform(
-    chunk: Buffer,
-    encoding: BufferEncoding,
-    callback: TransformCallback
-  ): void {
-    // Single offer is populated or not - to be validated
-    const data = chunk.toString()
-
-    callback(null, chunk)
-  }
-  _flush(callback: TransformCallback): void {
-    // Not needed ?
-    callback()
-  }
-}
+const dateTimestamp = new Date()
 
 const main = async () => {
-  const feedURL = path.join(__dirname, './data/feed_sample.xml')
-  const feedOutUrl = path.join(__dirname, './data/feed_sample_out.xml')
-  const readStream = fs.createReadStream(feedURL, {
-    highWaterMark: 3 * 1024,
-  })
-  const writeStream = fs.createWriteStream(feedOutUrl)
-
-  readStream
-    .pipe(new SplitInToOffer())
-    .pipe(new AddIsActiveNode())
-    .pipe(new ActiveOfferMonitor())
-    .pipe(writeStream)
+  const feedURL = path.join(__dirname, './data/feed.xml')
+  const feedOutUrl = path.join(__dirname, './data/feed_out.xml')
+  const readStream = createReadStream(feedURL)
+  const writeStream = createWriteStream(feedOutUrl)
+  console.clear()
+  console.log('>>> Processing')
+  pipeline(
+    readStream,
+    new SplitInToOffer(),
+    new AddIsActiveNode(dateTimestamp),
+    new ActiveOfferMonitor(dateTimestamp),
+    writeStream,
+    (err) => {
+      if (err) {
+        console.log(err)
+        process.exit(1)
+      }
+      console.log('Done !')
+    }
+  )
 }
 
 main()

@@ -8,10 +8,12 @@ import { PassThrough, TransformCallback } from 'node:stream'
 export class ActiveOfferMonitor extends PassThrough {
   activeOffers: number
   nonActiveOffers: number
-  constructor(opts?: any) {
+  dateTimestamp: Date
+  constructor(dateTimestamp: Date, opts?: any) {
     super({ ...opts })
     this.activeOffers = 0
     this.nonActiveOffers = 0
+    this.dateTimestamp = dateTimestamp
   }
   _transform(
     chunk: any,
@@ -23,17 +25,24 @@ export class ActiveOfferMonitor extends PassThrough {
       ? this.activeOffers++
       : null
     data.includes('<is_active><![CDATA[false]]></is_active>')
-      ? this.nonActiveOffers
+      ? this.nonActiveOffers++
       : null
     callback(null, chunk)
   }
   _flush(callback: TransformCallback): void {
+    const finishTime = new Date()
+    const processingTime =
+      (finishTime.getTime() - this.dateTimestamp.getTime()) / 1000
+    console.clear()
     console.log(`
-      =======================================
-      Active offers: ${this.activeOffers}
-  
-      Nonactive offers: ${this.nonActiveOffers}
-      =======================================
+      =================================
+      | ${this.dateTimestamp.toUTCString()} |
+      =================================
+        Active offers: ${this.activeOffers}
+        Paused offers: ${this.nonActiveOffers}
+
+        Processing time: ${processingTime} sec
+      =================================
       `)
     callback()
   }
