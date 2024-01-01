@@ -8,11 +8,12 @@ import { AddIsActiveNode } from './helpers/is-active-transform'
 const dateTimestamp = new Date()
 
 const main = async () => {
-  const feedURL = path.join(__dirname, './data/feed_sample.xml')
-  const feedOutUrl = path.join(__dirname, './data/feed_sample_out.xml')
+  const feedURL = path.join(__dirname, './data/feed.xml')
+  const feedOutUrl = path.join(__dirname, './data/feed_out.xml')
   const readStream = createReadStream(feedURL)
   const writeStream = createWriteStream(feedOutUrl)
-
+  console.clear()
+  console.log('>>> Processing')
   pipeline(
     readStream,
     new SplitInToOffer(),
@@ -24,6 +25,7 @@ const main = async () => {
         console.log(err)
         process.exit(1)
       }
+      console.log('Done !')
     }
   )
 }

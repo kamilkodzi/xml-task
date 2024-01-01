@@ -1,3 +1,4 @@
 node_modules
-src/**/*.xml
+# src/**/*.xml
+src/data/feed_out.xml
 lib

@@ -33,6 +33,7 @@ export class ActiveOfferMonitor extends PassThrough {
     const finishTime = new Date()
     const processingTime =
       (finishTime.getTime() - this.dateTimestamp.getTime()) / 1000
+    console.clear()
     console.log(`
       =================================
       | ${this.dateTimestamp.toUTCString()} |

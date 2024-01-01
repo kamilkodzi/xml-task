@@ -1,12 +1,10 @@
 {
   "name": "xml-stream",
   "version": "1.0.0",
-  "description": "Tool for xml conversion",
+  "description": "Tool used for XML mutations",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc",
-    "process-sample": "ts-node-dev src/index.ts",
-    "process-feed": "ts-node-dev src/index.ts"
+    "start": "npx ts-node-dev src/index.ts"
   },
   "keywords": [],
   "author": "kamilkodzi",
