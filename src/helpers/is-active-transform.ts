@@ -62,7 +62,7 @@ export class AddIsActiveNode extends Transform {
       return
     }
 
-    // when previous logic fails, set offer as not active
+    // When previous logic fails, set offer as not active
     const newData = injectXMLInToOffer(data, isActive.false)
     this.push(newData)
     callback()

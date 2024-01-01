@@ -3,7 +3,7 @@ import { PassThrough, TransformCallback } from 'node:stream'
 /**
  * Monitor must recieve single offer in chunk,
  * If single offer is not provided then counts will ne not accurate
- * @param {any} opt - please check PassThrough implementation for detalis
+ * @param {any} opt - Please check PassThrough implementation for detalis
  */
 export class ActiveOfferMonitor extends PassThrough {
   activeOffers: number

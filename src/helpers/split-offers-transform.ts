@@ -1,8 +1,8 @@
 import { Transform, TransformCallback } from 'node:stream'
 
 /**
- * Ensure that in single chunk there will be up to one offer
- * Potentaialy could be on offer at all or just xml header
+ * Ensure that in single chunk there will be up to one offer.
+ * Potentaialy could be on offer at all or just xml header.
  */
 export class SplitInToOffer extends Transform {
   tail: string
@@ -16,7 +16,7 @@ export class SplitInToOffer extends Transform {
     encoding: BufferEncoding,
     callback: TransformCallback
   ): void {
-    // Potential risk with another <offer> inside CDATA - TBC in future
+    // Potential risk with another <offer> inside CDATA - TBC in future (marked in README)
     const data = chunk.toString()
     const lastClosingTagIndex = (this.tail + data).lastIndexOf('</offer>')
 
@@ -30,7 +30,7 @@ export class SplitInToOffer extends Transform {
       this.tail = (this.tail + data).slice(lastClosingTagIndex + 8).toString()
       callback()
     } else {
-      // there is no </offer> tag in previous + current chunk
+      // There is no </offer> tag in previous + current chunk
       // so all is stored in to tail propertie for further processing
       this.tail = this.tail + data
       callback()
