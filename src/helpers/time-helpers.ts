@@ -10,9 +10,12 @@ export const active = (dateTimestamp: Date) => {
     // Counting minutes past after midnight
     const openingMinutes =
       parseInt(opening?.split(':')[0]) * 60 + parseInt(opening?.split(':')[1])
-    const closingMinutes =
+    let closingMinutes =
       parseInt(closing?.split(':')[0]) * 60 + parseInt(closing?.split(':')[1])
+    // Exception for 00:00 on closing time, time will be set in to "24:00"
+    if (closingMinutes === 0) closingMinutes = 24 * 60
     const currentMinutes = currentUTCHour * 60 + currentUTCMinutes
+
     const isActive =
       currentMinutes >= openingMinutes && currentMinutes <= closingMinutes
     return isActive
