@@ -6,6 +6,7 @@ The tool could be further explored in terms of performance, however, the current
 
 ### Areas to investigate:
 
+1. Find and use right xml parser
 1. Unit tests,
 1. Concurrent processing,
 1. Caching `opening_times` and returning immediate results without parsing into JSON again the same values,
